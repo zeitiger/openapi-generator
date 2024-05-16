@@ -88,6 +88,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
     public static final String IMPLICIT_HEADERS_REGEX = "implicitHeadersRegex";
     public static final String JAVAX_PACKAGE = "javaxPackage";
     public static final String USE_JAKARTA_EE = "useJakartaEe";
+    public static final String USE_JAVA9 = "useJava9";
     public static final String CONTAINER_DEFAULT_TO_NULL = "containerDefaultToNull";
 
     public static final String CAMEL_CASE_DOLLAR_SIGN = "camelCaseDollarSign";
@@ -143,6 +144,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
     protected String implicitHeadersRegex = null;
     protected boolean camelCaseDollarSign = false;
     protected boolean useJakartaEe = false;
+    protected boolean useJava9 = false;
     protected boolean containerDefaultToNull = false;
     protected boolean generateConstructorWithAllArgs = false;
     protected boolean generateBuilder = false;
@@ -284,6 +286,7 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
         cliOptions.add(CliOption.newString(IMPLICIT_HEADERS_REGEX, "Skip header parameters that matches given regex in the generated API methods using @ApiImplicitParams annotation. Note: this parameter is ignored when implicitHeaders=true"));
         cliOptions.add(CliOption.newBoolean(CAMEL_CASE_DOLLAR_SIGN, "Fix camelCase when starting with $ sign. when true : $Value when false : $value"));
         cliOptions.add(CliOption.newBoolean(USE_JAKARTA_EE, "whether to use Jakarta EE namespace instead of javax"));
+        cliOptions.add(CliOption.newBoolean(USE_JAVA9, "since Java 9 there is an alternative with javax.annotation.processing"))
         cliOptions.add(CliOption.newBoolean(CONTAINER_DEFAULT_TO_NULL, "Set containers (array, set, map) default to null"));
         cliOptions.add(CliOption.newBoolean(GENERATE_CONSTRUCTOR_WITH_ALL_ARGS, "whether to generate a constructor for all arguments").defaultValue(Boolean.FALSE.toString()));
         cliOptions.add(CliOption.newBoolean(GENERATE_BUILDERS, "Whether to generate builders for models").defaultValue(Boolean.FALSE.toString()));
@@ -671,6 +674,11 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
             this.setUseJakartaEe(Boolean.parseBoolean(additionalProperties.get(USE_JAKARTA_EE).toString()));
         }
         additionalProperties.put(USE_JAKARTA_EE, useJakartaEe);
+
+        if (additionalProperties.containsKey(USE_JAVA9)) {
+            this.setUseJava9(Boolean.parseBoolean(additionalProperties.get(USE_JAVA9).toString()));
+        }
+        additionalProperties.put(USE_JAVA9, useJava9);
 
         if (useJakartaEe) {
             applyJakartaPackage();
@@ -2395,6 +2403,10 @@ public abstract class AbstractJavaCodegen extends DefaultCodegen implements Code
 
     public void setUseJakartaEe(boolean useJakartaEe) {
         this.useJakartaEe = useJakartaEe;
+    }
+
+    public void setUseJava9(boolean useJava9) {
+        this.useJava9 = useJava9;
     }
 
     public void setContainerDefaultToNull(boolean containerDefaultToNull) {
